@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel de Inscrições | Digital Day 2026</title>
+
+  <style>
+    :root{
+      --bg0:#050205;
+      --bg1:#0b0308;
+      --bg2:#14040d;
+      --card:#120710;
+      --stroke:rgba(255,255,255,.10);
+      --text:rgba(255,255,255,.95);
+      --muted:rgba(255,255,255,.62);
+
+      --primary:#ff2aa3;
+      --primary-soft:#ff4ab3;
+      --secondary:#8f1453;
+      --track:rgba(255,255,255,.08);
+      --green:#22d36a;
+
+      --radius:18px;
+      --shadow:0 18px 60px rgba(0,0,0,.45);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(500px 400px at 12% 28%, rgba(255,42,163,.16), transparent 60%),
+        radial-gradient(480px 380px at 88% 16%, rgba(255,42,163,.14), transparent 60%),
+        radial-gradient(700px 500px at 84% 90%, rgba(255,42,163,.14), transparent 60%),
+        linear-gradient(135deg, #040204 0%, #0a0207 35%, #15050e 65%, #070206 100%);
+      overflow-x:hidden;
+    }
+
+    /* ornamentos */
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      pointer-events:none;
+      opacity:.18;
+      filter:blur(2px);
+      background:
+        repeating-radial-gradient(
+          circle at center,
+          rgba(255,42,163,.9) 0 8px,
+          transparent 8px 18px
+        );
+      z-index:0;
+    }
+
+    body::before{
+      left:-90px;
+      top:180px;
+    }
+
+    body::after{
+      right:-100px;
+      bottom:-20px;
+    }
+
+    .swirl-top{
+      position:fixed;
+      right:-70px;
+      top:-40px;
+      width:240px;
+      height:240px;
+      border-radius:50%;
+      opacity:.14;
+      pointer-events:none;
+      z-index:0;
+      background:
+        repeating-radial-gradient(
+          circle at center,
+          rgba(255,42,163,.9) 0 7px,
+          transparent 7px 16px
+        );
+    }
+
+    .topbar{
+      position:relative;
+      z-index:2;
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 28px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:rgba(0,0,0,.18);
+      backdrop-filter:blur(10px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+      font-size:16px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .brand .logo{
+      width:18px;
+      height:18px;
+      border-radius:6px;
+      background:linear-gradient(135deg, var(--primary), #ffffff);
+      box-shadow:0 0 24px rgba(255,42,163,.35);
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 6px rgba(34,211,106,.12);
+    }
+
+    .clock{
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.03em;
+      font-variant-numeric:tabular-nums;
+      color:rgba(255,255,255,.82);
+    }
+
+    .wrap{
+      position:relative;
+      z-index:2;
+      max-width:1080px;
+      margin:0 auto;
+      padding:34px 24px 28px;
+    }
+
+    .card{
+      position:relative;
+      overflow:hidden;
+      border-radius:22px;
+      padding:34px 34px 24px;
+      min-height:360px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:var(--shadow);
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 300px at 70% -20%, rgba(255,42,163,.13), transparent 55%),
+        linear-gradient(135deg, rgba(255,42,163,.10) 0%, rgba(143,20,83,.06) 35%, transparent 60%);
+      pointer-events:none;
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(125deg, transparent 20%, rgba(255,42,163,.08) 40%, transparent 58%);
+      mix-blend-mode:screen;
+      opacity:.55;
+      pointer-events:none;
+    }
+
+    .content{
+      position:relative;
+      z-index:2;
+    }
+
+    .event-year{
+      text-align:center;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:.08em;
+      color:rgba(255,255,255,.92);
+      margin-bottom:8px;
+    }
+
+    .event-title{
+      text-align:center;
+      font-size:72px;
+      line-height:.92;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+      margin:0;
+      color:#fff;
+      text-shadow:0 0 28px rgba(255,42,163,.12);
+    }
+
+    .event-sub{
+      text-align:center;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#fff;
+      margin-top:10px;
+      margin-bottom:30px;
+    }
+
+    .value{
+      text-align:center;
+      font-size:92px;
+      line-height:1;
+      font-weight:900;
+      color:var(--primary);
+      letter-spacing:-.03em;
+      font-variant-numeric:tabular-nums;
+      margin-bottom:18px;
+      text-shadow:0 0 30px rgba(255,42,163,.22);
+    }
+
+    .metaRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:10px;
+      font-size:15px;
+      font-weight:700;
+      color:var(--muted);
+    }
+
+    .percentage{
+      color:var(--primary);
+      font-size:20px;
+      font-weight:900;
+    }
+
+    .bar{
+      width:100%;
+      height:20px;
+      border-radius:999px;
+      background:var(--track);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background:linear-gradient(90deg, var(--primary) 0%, var(--primary-soft) 100%);
+      box-shadow:0 0 24px rgba(255,42,163,.35);
+      transition:width .7s ease;
+    }
+
+    .footer{
+      margin-top:26px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:8px;
+      color:rgba(255,255,255,.56);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .footer .clock-icon{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:11px;
+    }
+
+    .hint{
+      margin-top:14px;
+      text-align:center;
+      color:rgba(255,255,255,.48);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .error{
+      color:#ff7e97;
+    }
+
+    @media (max-width: 768px){
+      .wrap{
+        padding:20px 16px;
+      }
+
+      .card{
+        padding:24px 20px 20px;
+        min-height:auto;
+      }
+
+      .event-title{
+        font-size:52px;
+      }
+
+      .value{
+        font-size:68px;
+      }
+
+      .metaRow{
+        font-size:13px;
+      }
+
+      .percentage{
+        font-size:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="swirl-top"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      PAINEL DE INSCRIÇÕES
+    </div>
+
+    <div class="status">
+      <span class="dot"></span>
+      <span>AO VIVO</span>
+    </div>
+
+    <div class="clock" id="clock">--:--:--</div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="content">
+        <div class="event-year">— 2026 —</div>
+
+        <h1 class="event-title">DIGITAL<br>DAY</h1>
+        <div class="event-sub">SEBRAE</div>
+
+        <div class="value" id="event-value">--</div>
+
+        <div class="metaRow">
+          <span id="event-meta">Meta: -- / --</span>
+          <span class="percentage" id="event-pct">--%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill" id="event-fill"></div>
+        </div>
+
+        <div class="footer">
+          <div class="clock-icon">🕒</div>
+          <span id="event-updated">Atualizado: --</span>
+        </div>
+
+        <div class="hint" id="event-hint"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // COLE AQUI A URL DO WEBHOOK
+    const WEBHOOK_URL = "https://n8n.srv1064194.hstgr.cloud/workflow/e6kxY8ORmqkWs999";
+
+    // DEFINA A META DO EVENTO
+    const EVENT_META = 5000;
+
+    // TEMPO DE ATUALIZAÇÃO EM SEGUNDOS
+    const REFRESH_SECONDS = 15;
+
+    const $ = (id) => document.getElementById(id);
+
+    function formatNumber(n){
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return "--";
+      return new Intl.NumberFormat("pt-BR").format(Number(n));
+    }
+
+    function calcPct(value, goal){
+      const v = Number(value);
+      const g = Number(goal);
+      if (!g || Number.isNaN(v) || Number.isNaN(g)) return 0;
+      return Math.max(0, Math.min(100, (v / g) * 100));
+    }
+
+    function formatDateTime(date){
+      return date.toLocaleString("pt-BR");
+    }
+
+    async function fetchTotal(url){
+      const res = await fetch(url, { method: "GET" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+
+      const total = Number(json?.Total_de_inscritos);
+      if (Number.isNaN(total)) {
+        throw new Error("JSON inválido: campo Total_de_inscritos não encontrado");
+      }
+
+      return total;
+    }
+
+    function updatePanel(total){
+      const pct = calcPct(total, EVENT_META);
+
+      $("event-value").textContent = formatNumber(total);
+      $("event-meta").textContent = `Meta: ${formatNumber(total)} / ${formatNumber(EVENT_META)}`;
+      $("event-pct").textContent = `${pct.toFixed(1)}%`;
+      $("event-fill").style.width = `${pct}%`;
+      $("event-updated").textContent = `Atualizado: ${formatDateTime(new Date())}`;
+    }
+
+    function setHint(message = "", isError = false){
+      const hint = $("event-hint");
+      hint.textContent = message;
+      hint.classList.toggle("error", isError);
+    }
+
+    async function refreshData(){
+      try{
+        if (!WEBHOOK_URL || WEBHOOK_URL.includes("COLE_AQUI")) {
+          const demo = {
+          Digital Day: { inscritos: 524, meta: 5000, updatedAt: "2026-02-05T17:13:23-03:00" }
+        };
+        updateCard("digital", demo.digital);
+        setHint("digital", "Modo demo (cole a URL do webhook para dados reais).");
+        return;
+      }
+
+        setHint("Atualizando...");
+        const total = await fetchTotal(WEBHOOK_URL);
+        updatePanel(total);
+        setHint("");
+      } catch (error){
+        setHint(`Erro ao buscar dados: ${error.message}`, true);
+      }
+    }
+
+    function tickClock(){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      const ss = String(now.getSeconds()).padStart(2,"0");
+      $("clock").textContent = `${hh}:${mm}:${ss}`;
+    }
+
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    refreshData();
+    setInterval(refreshData, REFRESH_SECONDS * 1000);
+  </script>
+</body>
+</html>
